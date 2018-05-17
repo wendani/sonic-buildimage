@@ -340,6 +340,8 @@
       </DeviceLinkBase>
       <DeviceLinkBase>
         <ElementType>DeviceInterfaceLink</ElementType>
+        <AutoNegotiation>true</AutoNegotiation>
+        <Bandwidth>10000</Bandwidth>
         <EndDevice>switch-t0</EndDevice>
         <EndPort>Ethernet2</EndPort>
         <FlowControl>true</FlowControl>
