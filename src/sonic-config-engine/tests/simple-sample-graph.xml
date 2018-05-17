@@ -154,6 +154,16 @@
         </IPInterface>
         <IPInterface>
           <Name i:nil="true"/>
+          <AttachTo>PortChannel1001</AttachTo>
+          <Prefix>10.0.0.57/31</Prefix>
+        </IPInterface>
+        <IPInterface>
+          <Name i:Name="true"/>
+          <AttachTo>PortChannel1001</AttachTo>
+          <Prefix>FC00::72/126</Prefix>
+        </IPInterface>
+        <IPInterface>
+          <Name i:nil="true"/>
           <AttachTo>fortyGigE0/0</AttachTo>
           <Prefix>10.0.0.58/31</Prefix>
         </IPInterface>
