@@ -474,7 +474,15 @@ def parse_xml(filename, platform=None, port_config_file=None):
         ports.setdefault(port_name, {})['description'] = port_descriptions[port_name]
 
     results['PORT'] = ports
+
+    port_set = set(ports.keys())
+    for (pc_name, mbr_map) in pcs.items():
+        # remove portchannels that contain ports not existing in port_config.ini
+        if not set(mbr_map['members']).issubset(port_set):
+            del pcs[pc_name]
+
     results['PORTCHANNEL'] = pcs
+
     results['VLAN'] = vlans
     results['VLAN_MEMBER'] = vlan_members
 
