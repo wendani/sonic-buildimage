@@ -447,7 +447,6 @@ def parse_xml(filename, platform=None, port_config_file=None):
 
     results['INTERFACE'] = phyport_intfs
     results['VLAN_INTERFACE'] = vlan_intfs
-    results['PORTCHANNEL_INTERFACE'] = pc_intfs
 
     for port_name in port_speeds_default:
         # ignore port not in port_config.ini
@@ -482,6 +481,14 @@ def parse_xml(filename, platform=None, port_config_file=None):
             del pcs[pc_name]
 
     results['PORTCHANNEL'] = pcs
+
+
+    for pc_intf in pc_intfs.keys():
+        # remove portchannels not in PORTCHANNEL dictionary
+        if pc_intf[0] not in pcs:
+            del pc_intfs[pc_intf]
+
+    results['PORTCHANNEL_INTERFACE'] = pc_intfs
 
     results['VLAN'] = vlans
     results['VLAN_MEMBER'] = vlan_members
