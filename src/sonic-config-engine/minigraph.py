@@ -502,7 +502,6 @@ def parse_xml(filename, platform=None, port_config_file=None):
             del neighbors[nghbr]
 
     results['DEVICE_NEIGHBOR'] = neighbors
-
     results['DEVICE_NEIGHBOR_METADATA'] = { key:devices[key] for key in devices if key.lower() != hostname.lower() }
     results['SYSLOG_SERVER'] = dict((item, {}) for item in syslog_servers)
     results['DHCP_SERVER'] = dict((item, {}) for item in dhcp_servers)
