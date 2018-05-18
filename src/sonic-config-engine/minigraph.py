@@ -414,7 +414,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
             (port_speeds_default, port_descriptions) = parse_deviceinfo(child, hwsku)
 
     current_device = [devices[key] for key in devices if key.lower() == hostname.lower()][0]
-    results = {}    
+    results = {}
     results['DEVICE_METADATA'] = {'localhost': {
         'bgp_asn': bgp_asn,
         'deployment_id': deployment_id,
