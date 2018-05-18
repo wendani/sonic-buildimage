@@ -475,11 +475,13 @@ def parse_xml(filename, platform=None, port_config_file=None):
 
     results['PORT'] = ports
 
-    port_set = set(ports.keys())
-    for (pc_name, mbr_map) in pcs.items():
-        # remove portchannels that contain ports not existing in port_config.ini
-        if not set(mbr_map['members']).issubset(port_set):
-            del pcs[pc_name]
+    if port_config_file:
+        port_set = set(ports.keys())
+        for (pc_name, mbr_map) in pcs.items():
+            # remove portchannels that contain ports not existing in port_config.ini
+            # when port_config.ini exists
+            if not set(mbr_map['members']).issubset(port_set):
+                del pcs[pc_name]
 
     results['PORTCHANNEL'] = pcs
 
