@@ -414,7 +414,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
             (port_speeds_default, port_descriptions) = parse_deviceinfo(child, hwsku)
 
     current_device = [devices[key] for key in devices if key.lower() == hostname.lower()][0]
-    results = {}    
+    results = {}
     results['DEVICE_METADATA'] = {'localhost': {
         'bgp_asn': bgp_asn,
         'deployment_id': deployment_id,
@@ -456,9 +456,10 @@ def parse_xml(filename, platform=None, port_config_file=None):
         ports.setdefault(port_name, {})['speed'] = port_speeds_default[port_name]
 
     for port_name in port_speed_png:
-        # if port_name is not in port_config.ini, still consider it.
-        # and later swss will pick up and behave on-demand port break-up.
-        # if on-deman port break-up is not supported on a specific platform, swss will return error.
+        # not consider port not in port_config.ini
+        if port_name not in ports:
+            continue
+
         ports.setdefault(port_name, {})['speed'] = port_speed_png[port_name]
 
     for port_name, port in ports.items():
