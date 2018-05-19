@@ -458,6 +458,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
     for port_name in port_speed_png:
         # not consider port not in port_config.ini
         if port_name not in ports:
+            print >> sys.stderr, "Warning: drop '%s' from enlisting in PORT list" % port_name
             continue
 
         ports.setdefault(port_name, {})['speed'] = port_speed_png[port_name]
