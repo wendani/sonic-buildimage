@@ -127,7 +127,7 @@
         </PortChannel>
         <PortChannel>
           <Name>PortChannel1001</Name>
-          <AttachTo>Ethernet1;Ethernet2</AttachTo>
+          <AttachTo>fortyGigE0/1;fortyGigE0/2</AttachTo>
           <SubInterface/>
         </PortChannel>
       </PortChannelInterfaces>
