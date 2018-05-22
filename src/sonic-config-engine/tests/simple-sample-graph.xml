@@ -127,7 +127,7 @@
         </PortChannel>
         <PortChannel>
           <Name>PortChannel1001</Name>
-          <AttachTo>Ethernet1;Ethernet2</AttachTo>
+          <AttachTo>fortyGigE0/1;fortyGigE0/2</AttachTo>
           <SubInterface/>
         </PortChannel>
       </PortChannelInterfaces>
@@ -213,7 +213,7 @@
         <AutoNegotiation>true</AutoNegotiation>
         <Bandwidth>10000</Bandwidth>
         <EndDevice>switch-t0</EndDevice>
-        <EndPort>Ethernet1</EndPort>
+        <EndPort>fortyGigE0/1</EndPort>
         <FlowControl>true</FlowControl>
         <StartDevice>ARISTA05T1</StartDevice>
         <StartPort>Ethernet1/32</StartPort>
@@ -224,7 +224,7 @@
         <AutoNegotiation>true</AutoNegotiation>
         <Bandwidth>10000</Bandwidth>
         <EndDevice>switch-t0</EndDevice>
-        <EndPort>Ethernet2</EndPort>
+        <EndPort>fortyGigE0/2</EndPort>
         <FlowControl>true</FlowControl>
         <StartDevice>ARISTA06T1</StartDevice>
         <StartPort>Ethernet1/33</StartPort>
