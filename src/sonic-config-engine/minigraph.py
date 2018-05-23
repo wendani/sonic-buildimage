@@ -458,7 +458,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
     for port_name in port_speed_png:
         # not consider port not in port_config.ini
         if port_name not in ports:
-            print >> sys.stderr, "Warning: drop '%s' from enlisting in PORT list" % port_name
+            print >> sys.stderr, "Warning: ignore interface '%s' as it is not in the port_config.ini" % port_name
             continue
 
         ports.setdefault(port_name, {})['speed'] = port_speed_png[port_name]
@@ -482,6 +482,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
             # remove portchannels that contain ports not existing in port_config.ini
             # when port_config.ini exists
             if not set(mbr_map['members']).issubset(port_set):
+                print >> sys.stderr, "Warning: ignore '%s' as part of its member interfaces is not in the port_config.ini" % pc_name
                 del pcs[pc_name]
 
     results['PORTCHANNEL'] = pcs
@@ -490,6 +491,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
     for pc_intf in pc_intfs.keys():
         # remove portchannels not in PORTCHANNEL dictionary
         if pc_intf[0] not in pcs:
+            print >> sys.stderr, "Warning: ignore '%s' interface '%s' as '%s' is not in the valid PortChannel list" % (pc_intf[0], pc_intf[1], pc_intf[0])
             del pc_intfs[pc_intf]
 
     results['PORTCHANNEL_INTERFACE'] = pc_intfs
@@ -500,6 +502,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
     for nghbr in neighbors.keys():
         # remove port not in port_config.ini
         if nghbr not in ports:
+            print >> sys.stderr, "Warning: ignore interface '%s' in DEVICE_NEIGHBOR as it is not in the port_config.ini" % nghbr
             del neighbors[nghbr]
 
     results['DEVICE_NEIGHBOR'] = neighbors
