@@ -7,6 +7,7 @@
         {%- if PORT_ALL.append(port) %}{% endif %}
     {%- endfor %}
 {%- endif %}
+{%- if PORT_ALL | sort_by_port_index %}{% endif %}
 
 {%- set port_names_list_all = [] %}
 {%- for port in PORT_ALL %}
@@ -23,6 +24,7 @@
         {%- if PORT_ACTIVE.append(port) %}{%- endif %}
     {%- endfor %}
 {%- endif %}
+{%- if PORT_ACTIVE | sort_by_port_index %}{% endif %}
 
 {%- set port_names_list_active = [] %}
 {%- for port in PORT_ACTIVE %}
