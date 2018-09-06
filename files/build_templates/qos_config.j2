@@ -163,7 +163,7 @@
     },
 {% endif %}
     "PORT_QOS_MAP": {
-        "{{ port_names_all }}": {
+        "{{ port_names_active }}": {
             "dscp_to_tc_map"  : "[DSCP_TO_TC_MAP|AZURE]",
             "tc_to_queue_map" : "[TC_TO_QUEUE_MAP|AZURE]",
             "tc_to_pg_map"    : "[TC_TO_PRIORITY_GROUP_MAP|AZURE]",
