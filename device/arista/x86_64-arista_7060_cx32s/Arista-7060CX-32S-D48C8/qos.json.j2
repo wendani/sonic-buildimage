@@ -1,8 +1,1 @@
-{%- macro generate_port_lists(PORT_ALL) %}
-    {# Generate list of ports #}
-    {% for port_idx in range(0, 128, 2) if port_idx not in [26, 30, 34, 38, 90, 94, 98, 102] %}
-        {% if PORT_ALL.append("Ethernet%d" % (port_idx)) %}{% endif %}
-    {% endfor %}
-{%- endmacro %}
-
 {%- include 'qos_config.j2' %}

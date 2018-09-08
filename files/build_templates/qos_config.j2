@@ -1,12 +1,7 @@
 {%- set PORT_ALL = [] %}
-
-{%- if PORT is not defined %}
-    {%- if generate_port_lists(PORT_ALL) %}{% endif %}
-{%- else %}
-    {%- for port in PORT %}
-        {%- if PORT_ALL.append(port) %}{% endif %}
-    {%- endfor %}
-{%- endif %}
+{%- for port in PORT %}
+    {%- if PORT_ALL.append(port) %}{% endif %}
+{%- endfor %}
 {%- if PORT_ALL | sort_by_port_index %}{% endif %}
 
 {%- set port_names_list_all = [] %}
