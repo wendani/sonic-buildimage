@@ -28,6 +28,9 @@
 {%- set port_names_active = port_names_list_active | join(',') -%}
 
 
+{%- set pfc_to_pg_map_supported_asics = ['mellanox', 'barefoot', 'marvell'] -%}
+
+
 {
     "TC_TO_PRIORITY_GROUP_MAP": {
         "AZURE": {
@@ -147,7 +150,7 @@
             "weight": "20"
         }
     },
-{% if pfc_to_pg_map is defined and pfc_to_pg_map %}
+{% if asic_type in pfc_to_pg_map_supported_asics  %}
     "PFC_PRIORITY_TO_PRIORITY_GROUP_MAP": {
         "AZURE": {
             "0": "0",
@@ -163,7 +166,7 @@
             "tc_to_queue_map" : "[TC_TO_QUEUE_MAP|AZURE]",
             "tc_to_pg_map"    : "[TC_TO_PRIORITY_GROUP_MAP|AZURE]",
             "pfc_to_queue_map": "[MAP_PFC_PRIORITY_TO_QUEUE|AZURE]",
-{% if pfc_to_pg_map is defined and pfc_to_pg_map %}
+{% if asic_type in pfc_to_pg_map_supported_asics %}
             "pfc_to_pg_map"   : "[PFC_PRIORITY_TO_PRIORITY_GROUP_MAP|AZURE]",
 {% endif %}
             "pfc_enable"      : "3,4"
