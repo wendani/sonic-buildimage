@@ -32,6 +32,9 @@
 
 
 {
+{% if generate_tc_to_pg_map is defined %}
+    {{- generate_tc_to_pg_map() }}
+{% else %}
     "TC_TO_PRIORITY_GROUP_MAP": {
         "AZURE": {
             "0": "0",
@@ -44,6 +47,7 @@
             "7": "7"
         }
     },
+{% endif %}
     "MAP_PFC_PRIORITY_TO_QUEUE": {
         "AZURE": {
             "0": "0",
@@ -151,6 +155,9 @@
         }
     },
 {% if asic_type in pfc_to_pg_map_supported_asics  %}
+    {%- if generate_pfc_to_pg_map is defined %}
+        {{- generate_pfc_to_pg_map() }}
+    {%- else %}
     "PFC_PRIORITY_TO_PRIORITY_GROUP_MAP": {
         "AZURE": {
             "0": "0",
@@ -159,6 +166,8 @@
             "4": "4"
         }
     },
+    {%- endif %}
+
 {% endif %}
     "PORT_QOS_MAP": {
         "{{ port_names_active }}": {
