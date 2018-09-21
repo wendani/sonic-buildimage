@@ -155,19 +155,12 @@
         }
     },
 {% if asic_type in pfc_to_pg_map_supported_asics  %}
-    {%- if generate_pfc_to_pg_map is defined %}
-        {{- generate_pfc_to_pg_map() }}
-    {%- else %}
     "PFC_PRIORITY_TO_PRIORITY_GROUP_MAP": {
         "AZURE": {
-            "0": "0",
-            "1": "1",
             "3": "3",
             "4": "4"
         }
     },
-    {%- endif %}
-
 {% endif %}
     "PORT_QOS_MAP": {
         "{{ port_names_active }}": {
