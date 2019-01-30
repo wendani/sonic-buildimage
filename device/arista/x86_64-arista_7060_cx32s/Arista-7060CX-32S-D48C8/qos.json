@@ -160,6 +160,5 @@
         "Ethernet0,Ethernet2,Ethernet4,Ethernet6,Ethernet8,Ethernet10,Ethernet12,Ethernet14,Ethernet16,Ethernet18,Ethernet20,Ethernet22,Ethernet24,Ethernet28,Ethernet32,Ethernet36,Ethernet40,Ethernet42,Ethernet44,Ethernet46,Ethernet48,Ethernet50,Ethernet52,Ethernet54,Ethernet56,Ethernet58,Ethernet60,Ethernet62,Ethernet64,Ethernet66,Ethernet68,Ethernet70,Ethernet72,Ethernet74,Ethernet76,Ethernet78,Ethernet80,Ethernet82,Ethernet84,Ethernet86,Ethernet88,Ethernet92,Ethernet96,Ethernet100,Ethernet104,Ethernet106,Ethernet108,Ethernet110,Ethernet112,Ethernet114,Ethernet116,Ethernet118,Ethernet120,Ethernet122,Ethernet124,Ethernet126|6": {
             "scheduler"     :   "[SCHEDULER|scheduler.0]"
         }
-
     }
 }
