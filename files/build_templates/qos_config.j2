@@ -143,7 +143,11 @@
     "SCHEDULER": {
         "scheduler.0": {
             "type"  : "DWRR",
-            "weight": "20"
+            "weight": "14"
+        },
+        "scheduler.1": {
+            "type"  : "DWRR",
+            "weight": "15"
         }
     },
 {% if asic_type in pfc_to_pg_map_supported_asics  %}
@@ -203,6 +207,11 @@
 {% endfor %}
 {% for port in PORT_ACTIVE %}
         "{{ port }}|1": {
+            "scheduler": "[SCHEDULER|scheduler.0]"
+        },
+{% endfor %}
+{% for port in PORT_ACTIVE %}
+        "{{ port }}|2": {
             "scheduler": "[SCHEDULER|scheduler.0]"
         },
 {% endfor %}
