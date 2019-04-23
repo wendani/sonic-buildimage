@@ -3,6 +3,7 @@
 # Export platform information. Required to be able to write
 # vendor specific code.
 export platform=`sonic-cfggen -y /etc/sonic/sonic_version.yml -v asic_type`
+export device=`sonic-cfggen -H -v DEVICE_METADATA.localhost.platform`
 
 MAC_ADDRESS=`ip link show eth0 | grep ether | awk '{print $2}'`
 
