@@ -612,20 +612,18 @@ def parse_xml(filename, platform=None, port_config_file=None):
             vlan_intfs[(vlan_invert_mapping[intf[0]], intf[1])] = {}
             vlan_intfs[vlan_invert_mapping[intf[0]]] = {}
         elif intf[0][0:11] == 'PortChannel':
-            if current_device['type'] not in backend_device_types:
-                pc_intfs[intf] = {}
-                pc_intfs[intf[0]] = {}
-            else:
+            pc_intfs[intf] = {}
+            pc_intfs[intf[0]] = {}
+            if current_device['type'] in backend_device_types:
                 intf_info = list(intf)
                 intf_info[0] = intf_info[0] + VLAN_SUB_INTERFACE_SEPARATOR + VLAN_SUB_INTERFACE_VLAN_ID
                 sub_intf = tuple(intf_info)
                 vlan_sub_intfs[sub_intf[0]] = {"admin_status" : "up"}
                 vlan_sub_intfs[sub_intf] = {}
         else:
-            if current_device['type'] not in backend_device_types:
-                phyport_intfs[intf] = {}
-                phyport_intfs[intf[0]] = {}
-            else:
+            phyport_intfs[intf] = {}
+            phyport_intfs[intf[0]] = {}
+            if current_device['type'] in backend_device_types:
                 intf_info = list(intf)
                 intf_info[0] = intf_info[0] + VLAN_SUB_INTERFACE_SEPARATOR + VLAN_SUB_INTERFACE_VLAN_ID
                 sub_intf = tuple(intf_info)
