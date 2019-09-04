@@ -73,6 +73,20 @@
             "7": "7"
         }
     },
+{% if DEVICE_METADATA['localhost']['type'] in backend_device_types %}
+    "DOT1P_TO_TC_MAP": {
+        "AZURE": {
+            "0": "0",
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "6": "6",
+            "7": "7"
+        }
+    },
+{% else %}
     "DSCP_TO_TC_MAP": {
         "AZURE": {
             "0" : "1",
@@ -141,18 +155,7 @@
             "63": "1"
         }
     },
-    "DOT1P_TO_TC_MAP": {
-        "AZURE": {
-            "0": "0",
-            "1": "1",
-            "2": "2",
-            "3": "3",
-            "4": "4",
-            "5": "5",
-            "6": "6",
-            "7": "7"
-        }
-    },
+{% endif %}
     "SCHEDULER": {
         "scheduler.0": {
             "type"  : "DWRR",
