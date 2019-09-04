@@ -30,6 +30,10 @@ ns3 = "http://www.w3.org/2001/XMLSchema-instance"
 spine_chassis_frontend_role = 'SpineChassisFrontendRouter'
 chassis_backend_role = 'ChassisBackendRouter'
 
+backend_device_types = ['BackEndToRRouter', 'BackEndLeafRouter']
+VLAN_SUB_INTERFACE_SEPARATOR = '.'
+VLAN_SUB_INTERFACE_VLAN_ID = '10'
+
 # Default Virtual Network Index (VNI) 
 vni_default = 8000
 
@@ -598,6 +602,7 @@ def parse_xml(filename, platform=None, port_config_file=None):
     vlan_intfs = {}
     pc_intfs = {}
     vlan_invert_mapping = { v['alias']:k for k,v in vlans.items() if v.has_key('alias') }
+    vlan_sub_intfs = {}
 
     for intf in intfs:
         if intf[0][0:4] == 'Vlan':
@@ -607,13 +612,31 @@ def parse_xml(filename, platform=None, port_config_file=None):
             vlan_intfs[(vlan_invert_mapping[intf[0]], intf[1])] = {}
             vlan_intfs[vlan_invert_mapping[intf[0]]] = {}
         elif intf[0][0:11] == 'PortChannel':
-            pc_intfs[intf] = {}
-            pc_intfs[intf[0]] = {}
+            if current_device['type'] not in backend_device_types:
+                pc_intfs[intf] = {}
+                pc_intfs[intf[0]] = {}
+            else:
+                intf_info = list(intf)
+                intf_info[0] = intf_info[0] + VLAN_SUB_INTERFACE_SEPARATOR + VLAN_SUB_INTERFACE_VLAN_ID
+                sub_intf = tuple(intf_info)
+                vlan_sub_intfs[sub_intf[0]] = {"admin_status" : "up"}
+                vlan_sub_intfs[sub_intf] = {}
         else:
-            phyport_intfs[intf] = {}
-            phyport_intfs[intf[0]] = {}
+            if current_device['type'] not in backend_device_types:
+                phyport_intfs[intf] = {}
+                phyport_intfs[intf[0]] = {}
+            else:
+                intf_info = list(intf)
+                intf_info[0] = intf_info[0] + VLAN_SUB_INTERFACE_SEPARATOR + VLAN_SUB_INTERFACE_VLAN_ID
+                sub_intf = tuple(intf_info)
+                vlan_sub_intfs[sub_intf[0]] = {"admin_status" : "up"}
+                vlan_sub_intfs[sub_intf] = {}
 
-    results['INTERFACE'] = phyport_intfs
+    if current_device['type'] not in backend_device_types:
+        results['INTERFACE'] = phyport_intfs
+    else:
+        results['VLAN_SUB_INTERFACE'] = vlan_sub_intfs
+
     results['VLAN_INTERFACE'] = vlan_intfs
 
     for port_name in port_speeds_default:
