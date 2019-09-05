@@ -1,47 +1,60 @@
-FROM docker-config-engine
+{% from "dockers/dockerfile-macros.j2" import install_debian_packages, install_python_wheels, copy_files %}
+FROM docker-config-engine-stretch
+
+ARG docker_container_name
+RUN [ -f /etc/rsyslog.conf ] && sed -ri "s/%syslogtag%/$docker_container_name#%syslogtag%/;" /etc/rsyslog.conf
 
 # Make apt-get non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update apt's package index files
-RUN apt-get update
-
 # Install required packages
-RUN apt-get install -y python-pip sensord fancontrol
+RUN apt-get update &&   \
+    apt-get install -y  \
+        python-pip      \
+        libpython2.7    \
+        ipmitool        \
+        librrd8         \
+        librrd-dev      \
+        rrdtool         \
+        python-smbus    \
+        ethtool         \
+        dmidecode
 
 {% if docker_platform_monitor_debs.strip() -%}
-# Copy all locally-built Debian package dependencies
-COPY{{' '}}
-{%- for deb in docker_platform_monitor_debs.split(' ') -%}
-debs/{{ deb }}{{' '}}
-{%- endfor -%}
-/debs/
+# Copy locally-built Debian package dependencies
+{{ copy_files("debs/", docker_platform_monitor_debs.split(' '), "/debs/") }}
 
-# Install all locally-built Debian package dependencies
-# and implicitly install their dependencies
-RUN dpkg_apt() { [ -f $1 ] && { dpkg -i $1 || apt-get -y install -f; } || return 1; }; dpkg_apt /debs/*.deb
-{% endif %}
+# Install locally-built Debian packages and implicitly install their dependencies
+{{ install_debian_packages(docker_platform_monitor_debs.split(' ')) }}
+{%- endif %}
+
+{% if docker_platform_monitor_pydebs.strip() -%}
+# Copy locally-built Debian package dependencies
+{{ copy_files("python-debs/", docker_platform_monitor_pydebs.split(' '), "/debs/") }}
+
+# Install locally-built Debian packages and implicitly install their dependencies
+{{ install_debian_packages(docker_platform_monitor_pydebs.split(' ')) }}
+{%- endif %}
 
 {% if docker_platform_monitor_whls.strip() -%}
-# Copy all locally-built Python wheel dependencies
-COPY{{' '}}
-{%- for whl in docker_platform_monitor_whls.split(' ') -%}
-python-wheels/{{ whl }}{{' '}}
-{%- endfor -%}
-/python-wheels/
+# Copy locally-built Python wheel dependencies
+{{ copy_files("python-wheels/", docker_platform_monitor_whls.split(' '), "/python-wheels/") }}
 
-# Install all locally-built Python wheel dependencies
-RUN pip install /python-wheels/*.whl
+# Install locally-built Python wheel dependencies
+{{ install_python_wheels(docker_platform_monitor_whls.split(' ')) }}
 {% endif %}
 
 # Clean up
-RUN apt-get remove -y python-pip
-RUN apt-get clean -y
-RUN apt-get autoclean -y
-RUN apt-get autoremove -y
-RUN rm -rf /debs /python-wheels ~/.cache
+RUN apt-get purge -y           \
+        python-pip          && \
+    apt-get clean -y        && \
+    apt-get autoclean -y    && \
+    apt-get autoremove -y   && \
+    rm -rf /debs               \
+           /python-wheels      \
+           ~/.cache
 
-COPY ["start.sh", "lm-sensors.sh", "/usr/bin/"]
-COPY ["supervisord.conf", "/etc/supervisor/conf.d/"]
+COPY ["docker_init.sh", "lm-sensors.sh", "/usr/bin/"]
+COPY ["docker-pmon.supervisord.conf.j2", "start.sh.j2", "/usr/share/sonic/templates/"]
 
-ENTRYPOINT ["/usr/bin/supervisord"]
+ENTRYPOINT ["/usr/bin/docker_init.sh"]

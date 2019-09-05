@@ -1,38 +1,36 @@
-FROM docker-config-engine
+{% from "dockers/dockerfile-macros.j2" import install_debian_packages, install_python_wheels, copy_files %}
+FROM docker-config-engine-stretch
 
-## Make apt-get non-interactive
+ARG docker_container_name
+RUN [ -f /etc/rsyslog.conf ] && sed -ri "s/%syslogtag%/$docker_container_name#%syslogtag%/;" /etc/rsyslog.conf
+
+# Make apt-get non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Update apt's cache of available packages
 RUN apt-get update
 
-COPY \
-{% for deb in docker_database_debs.split(' ') -%}
-debs/{{ deb }}{{' '}}
-{%- endfor -%}
-debs/
+{% if docker_database_debs.strip() -%}
+# Copy locally-built Debian package dependencies
+{{ copy_files("debs/", docker_database_debs.split(' '), "/debs/") }}
 
-## Install redis-tools dependencies
-## TODO: implicitly install dependencies
-RUN apt-get -y install libjemalloc1
+# Install locally-built Debian packages and implicitly install their dependencies
+{{ install_debian_packages(docker_database_debs.split(' ')) }}
+{%- endif %}
 
-RUN dpkg -i \
-{% for deb in docker_database_debs.split(' ') -%}
-debs/{{ deb }}{{' '}}
-{%- endfor %}
-
-## Clean up
-RUN apt-get clean -y; apt-get autoclean -y; apt-get autoremove -y
-RUN rm -rf /debs
-
-RUN sed -ri 's/^(save .*$)/# \1/g;                                                    \
-             s/^daemonize yes$/daemonize no/;                                           \
-             s/^logfile .*$/logfile ""/;                                                \
-             s/^# syslog-enabled no$/syslog-enabled no/;                                \
-             s/^# unixsocket/unixsocket/;                                               \
+# Clean up
+RUN apt-get clean -y                                  && \
+    apt-get autoclean -y                              && \
+    apt-get autoremove -y                             && \
+    rm -rf /debs ~/.cache                             && \
+    sed -ri 's/^(save .*$)/# \1/g;                       \
+             s/^daemonize yes$/daemonize no/;            \
+             s/^logfile .*$/logfile ""/;                 \
+             s/^# syslog-enabled no$/syslog-enabled no/; \
+             s/^# unixsocket/unixsocket/;                \
              s/^client-output-buffer-limit pubsub [0-9]+mb [0-9]+mb [0-9]+/client-output-buffer-limit pubsub 0 0 0/ \
             ' /etc/redis/redis.conf
 
 COPY ["supervisord.conf", "/etc/supervisor/conf.d/"]
-COPY ["files/configdb-load.sh", "/usr/bin/"]
 
 ENTRYPOINT ["/usr/bin/supervisord"]
