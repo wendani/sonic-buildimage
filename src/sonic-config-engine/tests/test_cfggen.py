@@ -298,6 +298,18 @@ class TestCfgGen(TestCase):
             self.test_minigraph_vnet()
             self.test_minigraph_vxlan()
 
+            # VLAN_SUB_INTERFACE
+            argument = '-m "' + self.sample_graph_simple + '" -p "' + self.port_config + '" -v VLAN_SUB_INTERFACE'
+            output = self.run_script(argument)
+            print output.strip()
+            self.assertEqual(output.strip(), \
+                    "{('PortChannel01.10', '10.0.0.56/31'): {}, "
+                    "'Ethernet0.10': {'admin_status': 'up'}, "
+                    "('Ethernet0.10', '10.0.0.58/31'): {}, "
+                    "('PortChannel01.10', 'FC00::71/126'): {}, "
+                    "'PortChannel01.10': {'admin_status': 'up'}, "
+                    "('Ethernet0.10', 'FC00::75/126'): {}}")
+
         finally:
             print '\n    Change device type back to %s' % (TOR_ROUTER)
             if check_stderr:
