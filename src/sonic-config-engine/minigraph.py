@@ -614,12 +614,6 @@ def parse_xml(filename, platform=None, port_config_file=None):
         elif intf[0][0:11] == 'PortChannel':
             pc_intfs[intf] = {}
             pc_intfs[intf[0]] = {}
-            if current_device['type'] in backend_device_types:
-                intf_info = list(intf)
-                intf_info[0] = intf_info[0] + VLAN_SUB_INTERFACE_SEPARATOR + VLAN_SUB_INTERFACE_VLAN_ID
-                sub_intf = tuple(intf_info)
-                vlan_sub_intfs[sub_intf[0]] = {"admin_status" : "up"}
-                vlan_sub_intfs[sub_intf] = {}
         else:
             phyport_intfs[intf] = {}
             phyport_intfs[intf[0]] = {}
@@ -632,8 +626,6 @@ def parse_xml(filename, platform=None, port_config_file=None):
 
     if current_device['type'] not in backend_device_types:
         results['INTERFACE'] = phyport_intfs
-    else:
-        results['VLAN_SUB_INTERFACE'] = vlan_sub_intfs
 
     results['VLAN_INTERFACE'] = vlan_intfs
 
@@ -713,12 +705,22 @@ def parse_xml(filename, platform=None, port_config_file=None):
 
     for pc_intf in pc_intfs.keys():
         # remove portchannels not in PORTCHANNEL dictionary
-        if isinstance(pc_intf, tuple) and pc_intf[0] not in pcs:
-            print >> sys.stderr, "Warning: ignore '%s' interface '%s' as '%s' is not in the valid PortChannel list" % (pc_intf[0], pc_intf[1], pc_intf[0])
-            del pc_intfs[pc_intf]
-            pc_intfs.pop(pc_intf[0], None)
+        if isinstance(pc_intf, tuple):
+            if pc_intf[0] not in pcs:
+                print >> sys.stderr, "Warning: ignore '%s' interface '%s' as '%s' is not in the valid PortChannel list" % (pc_intf[0], pc_intf[1], pc_intf[0])
+                del pc_intfs[pc_intf]
+                pc_intfs.pop(pc_intf[0], None)
+            elif current_device['type'] in backend_device_types:
+                pc_intf_info = list(pc_intf)
+                pc_intf_info[0] = pc_intf_info[0] + VLAN_SUB_INTERFACE_SEPARATOR + VLAN_SUB_INTERFACE_VLAN_ID
+                sub_intf = tuple(pc_intf_info)
+                vlan_sub_intfs[sub_intf[0]] = {"admin_status" : "up"}
+                vlan_sub_intfs[sub_intf] = {}
 
-    results['PORTCHANNEL_INTERFACE'] = pc_intfs
+    if current_device['type'] not in backend_device_types:
+        results['PORTCHANNEL_INTERFACE'] = pc_intfs
+    else:
+        results['VLAN_SUB_INTERFACE'] = vlan_sub_intfs
 
     results['VLAN'] = vlans
     results['VLAN_MEMBER'] = vlan_members
